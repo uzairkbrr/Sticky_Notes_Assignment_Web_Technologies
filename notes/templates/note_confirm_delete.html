@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="delete-container">
+        <h2>Delete Note?</h2>
+        <p>Kya aap waqayi is note ko delete karna chahte hain? Yeh baad mein recover nahi ho ga.</p>
+        
+        <!-- yahan note preview dikhaya jaa raha hai delete se pehle -->
+        <div class="note-preview note-card" style="background-color: {{ note.color|default:'#FFFF99' }}; color: {{ note.text_color }};">
+            <h3>{{ note.title }}</h3>
+            <p>{{ note.content }}</p>
+        </div>
+        
+        <form method="post" class="delete-form">
+            {% csrf_token %}
+            <button type="submit" class="btn-delete-confirm">Haan, Delete Karein</button>
+            <a href="{% url 'note_list' %}" class="btn-cancel">Cancel</a>
+        </form>
+    </div>
+{% endblock %}

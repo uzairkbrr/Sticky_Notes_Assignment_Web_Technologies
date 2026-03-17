@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="form-container">
+        <!-- yahan form dikhayega, create ho ya edit -->
+        <h2>{% if edit_mode %}Edit Note{% else %}Create New Note{% endif %}</h2>
+        
+        <form method="post" class="note-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="form-actions">
+                <button type="submit" class="btn-save">Save Note</button>
+                <a href="{% url 'note_list' %}" class="btn-cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}
