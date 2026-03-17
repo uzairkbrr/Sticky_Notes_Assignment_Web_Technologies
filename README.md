@@ -1,11 +1,11 @@
-# Ideaflip Inspired Sticky Notes
+# StickIt
 
 A modern, beautifully designed Django web application that allows users to create, view, edit, and organize digital sticky notes. 
 
-Built as a University Web Engineering Assignment, this project started as a simple CRUD app and evolved into a highly polished, Ideaflip-inspired interface featuring a meticulously centered canvas layout, authentic sticky-note visuals with folded corners, and dynamic contrast-adjusted typography.
+Built as a University Web Engineering Assignment.
 
 ## ✨ Features
-- **Modern UI/UX**: Clean, centered canvas layout inspired by the Ideaflip web app utilizing custom Google Fonts (Montserrat).
+- **Modern UI/UX**: Clean, centered canvas layout utilizing custom Google Fonts (Montserrat).
 - **Authentic Note Cards**: Sticky notes look and feel physical, complete with drop shadows, subtle border radiuses, and CSS-folded corners.
 - **Dynamic Text Colors**: Uses backend luminance calculations to automatically switch note text between dark gray and white depending on the sticky note's background color, ensuring perfect readability.
 - **Authentication**: Secure user registration, login, and logout. Users can only access their personal dashboard.
