@@ -8,6 +8,9 @@ class Note(models.Model):
     # Note ka rang save karne ke liye, default halke peele rang (yellow) ka hai
     color = models.CharField(max_length=7, default='#FFFF99')
     
+    # pinned notes ke liye field
+    is_pinned = models.BooleanField(default=False)
+    
     # note kab bana aur kab edit hua iska record
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

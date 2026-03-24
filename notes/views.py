@@ -4,6 +4,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from .models import Note
 from .forms import NoteForm
+from django.db.models import Q
+from django.core.paginator import Paginator
 
 # yeh view naye user ko register karne ke liye hai
 def register_view(request):
@@ -30,10 +32,20 @@ def register_view(request):
 @login_required # login hona zaroori hai
 def note_list(request):
     # Database se current user ki notes fetch karein (Security Rule)
-    notes = Note.objects.filter(owner=request.user).order_by('-created_at')
+    # Pinned walay pehle (True pehle, isiliye -is_pinned) aayen aur naye walay pehle (-created_at)
+    notes = Note.objects.filter(owner=request.user).order_by('-is_pinned', '-created_at')
     
-    # note_list template pe bhejo
-    return render(request, 'note_list.html', {'notes': notes})
+    query = request.GET.get('q', '')
+    if query:
+        notes = notes.filter(Q(title__icontains=query) | Q(content__icontains=query))
+        
+    # Pagination: 10 items per page
+    paginator = Paginator(notes, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    # note_list template pe bhejo (notes array ki bajaye page_obj bhejen)
+    return render(request, 'note_list.html', {'notes': page_obj, 'query': query})
 
 # yeh view naya note banata hai
 @login_required
@@ -87,3 +99,18 @@ def note_delete(request, id):
         
     # Sirf delete confirmation page open karein
     return render(request, 'note_confirm_delete.html', {'note': note})
+
+@login_required
+def note_toggle_pin(request, id):
+    # Note dhoondo aur check karo ke owner same hai
+    note = get_object_or_404(Note, id=id, owner=request.user)
+    # Status flip karo
+    note.is_pinned = not note.is_pinned
+    note.save()
+    
+    if note.is_pinned:
+        messages.success(request, f'"{note.title}" pin ho gaya!')
+    else:
+        messages.info(request, f'"{note.title}" unpin ho gaya.')
+        
+    return redirect('note_list')

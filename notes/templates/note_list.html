@@ -1,15 +1,25 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="page-header">
-        <h2>My Notes</h2>
+    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h2 style="margin: 0;">My Notes</h2>
+        <form method="GET" action="{% url 'note_list' %}" class="search-form" style="display: flex; gap: 8px;">
+            <input type="text" name="q" value="{{ query }}" placeholder="Search by title or content..." style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 5px; width: 250px; font-family: inherit;">
+            <button type="submit" style="padding: 8px 15px; background: #333; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Search</button>
+            {% if query %}
+                <a href="{% url 'note_list' %}" style="padding: 8px 15px; background: #e0e0e0; color: #333; text-decoration: none; border-radius: 5px; font-weight: bold;">Clear</a>
+            {% endif %}
+        </form>
     </div>
     
     <!-- yahan user ki notes display ho rahi hain -->
     <div class="note-container">
         {% for note in notes %}
             <!-- note card ban raha hai aur bg color dynamically lagaya -->
-            <div class="note-card" style="background-color: {{ note.color|default:'#FFFF99' }}; color: {{ note.text_color }};">
+            <div class="note-card" style="background-color: {{ note.color|default:'#FFFF99' }}; color: {{ note.text_color }}; position: relative;">
+                <a href="{% url 'note_toggle_pin' note.id %}" class="pin-toggle {% if note.is_pinned %}is-pinned{% endif %}" title="{% if note.is_pinned %}Unpin Note{% else %}Pin Note{% endif %}">
+                    📌
+                </a>
                 <h3>{{ note.title }}</h3>
                 <p class="note-text">{{ note.content }}</p>
                 <div class="note-actions">
@@ -25,4 +35,24 @@
             </div>
         {% endfor %}
     </div>
+
+    <!-- Pagination Controls -->
+    {% if notes.has_other_pages %}
+    <div class="pagination" style="margin-top: 2rem; display: flex; justify-content: center; gap: 10px; align-items: center;">
+        {% if notes.has_previous %}
+            <a href="?page=1{% if query %}&q={{ query }}{% endif %}" style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 5px; text-decoration: none; color: #333; font-weight: bold;">&laquo; First</a>
+            <a href="?page={{ notes.previous_page_number }}{% if query %}&q={{ query }}{% endif %}" style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 5px; text-decoration: none; color: #333; font-weight: bold;">Previous</a>
+        {% endif %}
+
+        <span class="current" style="padding: 8px 12px; background: #333; color: white; border-radius: 5px; font-weight: bold;">
+            Page {{ notes.number }} of {{ notes.paginator.num_pages }}
+        </span>
+
+        {% if notes.has_next %}
+            <a href="?page={{ notes.next_page_number }}{% if query %}&q={{ query }}{% endif %}" style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 5px; text-decoration: none; color: #333; font-weight: bold;">Next</a>
+            <a href="?page={{ notes.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}" style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 5px; text-decoration: none; color: #333; font-weight: bold;">Last &raquo;</a>
+        {% endif %}
+    </div>
+    {% endif %}
+
 {% endblock %}

@@ -16,9 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # Redirect empty path to notes list
+    path('', RedirectView.as_view(pattern_name='note_list', permanent=False), name='root'),
     # Notes app routes
     path('', include('notes.urls')),
     

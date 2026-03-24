@@ -11,6 +11,8 @@ urlpatterns = [
     path('notes/<int:id>/edit/', views.note_edit, name='note_edit'),
     # Note delete karne ka url
     path('notes/<int:id>/delete/', views.note_delete, name='note_delete'),
+    # Note pin toggle karne ka rasta
+    path('notes/<int:id>/toggle-pin/', views.note_toggle_pin, name='note_toggle_pin'),
     
     # Registration ka url
     path('register/', views.register_view, name='register'),

@@ -7,11 +7,67 @@
         
         <form method="post" class="note-form">
             {% csrf_token %}
-            {{ form.as_p }}
+            
+            <div class="form-group">
+                {{ form.title.label_tag }}
+                {{ form.title }}
+                {{ form.title.errors }}
+            </div>
+
+            <div class="form-group" style="position: relative; margin-top: 15px;">
+                {{ form.content.label_tag }}
+                {{ form.content }}
+                <div id="char-counter" class="char-counter">0 characters</div>
+                {{ form.content.errors }}
+            </div>
+
+            <div style="display: flex; gap: 30px; align-items: flex-end; margin-top: 15px;">
+                <div class="form-group">
+                    {{ form.color.label_tag }}
+                    {{ form.color }}
+                </div>
+
+                <div class="pin-row">
+                    <label for="{{ form.is_pinned.id_for_label }}">Pin this note to top</label>
+                    <label class="switch">
+                        {{ form.is_pinned }}
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
             <div class="form-actions">
                 <button type="submit" class="btn-save">Save Note</button>
                 <a href="{% url 'note_list' %}" class="btn-cancel">Cancel</a>
             </div>
         </form>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const contentArea = document.querySelector('textarea[name="content"]');
+            const counter = document.getElementById('char-counter');
+            
+            function updateCounter() {
+                const length = contentArea.value.length;
+                counter.textContent = `${length} characters`;
+                
+                // Visual feedback if it gets long (example limit 500)
+                if (length > 450) {
+                    counter.classList.add('limit-near');
+                } else {
+                    counter.classList.remove('limit-near');
+                }
+                
+                if (length >= 500) {
+                    counter.classList.add('limit-reached');
+                } else {
+                    counter.classList.remove('limit-reached');
+                }
+            }
+            
+            contentArea.addEventListener('input', updateCounter);
+            updateCounter(); // Initial call
+        });
+    </script>
 {% endblock %}
